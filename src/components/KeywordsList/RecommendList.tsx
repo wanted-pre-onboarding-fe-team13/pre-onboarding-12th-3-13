@@ -4,7 +4,6 @@ export const RecommendList = () => {
   // --- 임시 --- //
   const isLoading = false;
   const error = null;
-  const selectedId = 0;
   const data = [
     {
       sickCd: 'C23',
@@ -43,8 +42,8 @@ export const RecommendList = () => {
       {!isLoading && data.length > 0 && (
         <>
           <p className="title">추천 검색어</p>
-          {data?.map(({ sickCd, sickNm }, idx) => (
-            <KeywordListItem key={sickCd} keyword={sickNm} isSelected={idx == selectedId} />
+          {data?.map(({ sickCd, sickNm }, index) => (
+            <KeywordListItem key={sickCd} keyword={sickNm} index={index} />
           ))}
         </>
       )}
