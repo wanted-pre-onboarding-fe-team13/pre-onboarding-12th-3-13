@@ -1,19 +1,16 @@
 import { styled } from 'styled-components';
+import { useRecoilValue } from 'recoil';
 
 import { RecentList, RecommendList } from '.';
+import { isSearchModeState } from '@/recoil/searchAtoms';
 
 export const KeywordsList = () => {
-  // --- 임시 --- //
-  const TEMP_KEYWORD = '';
-  const keyword = TEMP_KEYWORD;
-  // --- 임시 --- //
-
-  const list_type = keyword === '' ? 'recent' : 'recommended';
+  const isSearchMode = useRecoilValue(isSearchModeState);
 
   return (
     <>
-      {list_type === 'recent' && <RecentList />}
-      {list_type === 'recommended' && <RecommendList />}
+      {!isSearchMode && <RecentList />}
+      {isSearchMode && <RecommendList />}
     </>
   );
 };

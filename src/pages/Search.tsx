@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import { styled } from 'styled-components';
+import { useRecoilValue } from 'recoil';
 
 import { KeywordsList, SearchContainer } from '@/components';
+import { isShowKeywordListState } from '@/recoil/searchAtoms';
 
 const Search = () => {
-  const [showKeywordsList, setShowKeywordsList] = useState<boolean>(false);
-
-  const onInputFocus = () => setShowKeywordsList(true);
-  const onInputBlur = () => setShowKeywordsList(false);
+  const isShowKeywordList = useRecoilValue(isShowKeywordListState);
 
   return (
     <Container>
@@ -15,8 +13,8 @@ const Search = () => {
         국내 모든 임상시험 검색하고
         <br /> 온라인으로 참여하기
       </h2>
-      <SearchContainer onInputFocus={onInputFocus} onInputBlur={onInputBlur} />
-      {showKeywordsList && <KeywordsList />}
+      <SearchContainer />
+      {isShowKeywordList && <KeywordsList />}
     </Container>
   );
 };
