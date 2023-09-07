@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { Search } from '@/pages/Search';
+import Search from '@/pages/Search';
 
 const router = createBrowserRouter([
   {
