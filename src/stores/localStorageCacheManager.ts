@@ -18,6 +18,8 @@ class LocalStorageCacheManager {
     if (localStorage.length >= this.cacheSizeLimit) {
       this.removeOldestItem();
       localStorage.setItem(this.cacheKeyPrefix + key, JSON.stringify(data));
+    } else {
+      localStorage.setItem(this.cacheKeyPrefix + key, JSON.stringify(data));
     }
   }
 
