@@ -35,9 +35,7 @@
 
 ## 🎬 페이지 미리보기 & 구현영상
 
-구현영상은 배포 링크로 대체합니다.
-<br/>
-https://pre-onboarding-12th-3-13.vercel.app/
+배포 링크 : https://pre-onboarding-12th-3-13.vercel.app/
 
 #### 페이지 미리보기
 
@@ -51,7 +49,30 @@ https://pre-onboarding-12th-3-13.vercel.app/
 
 #### 설계 및 개발 방향
 
+사용자 경험(UX)을 개선하기 위해 다양한 Event Handler를 활용하여 추천 검색어와 최근 검색어를 손쉽게 선택하고 빠르게 검색할 수 있도록 도와줍니다.
+
 #### 주요 구성 및 동작
+
+- src/components/SearchContainer/SearchContainer.tsx, TextInput.tsx
+  - 검색 Input과 관련된 사용자 Event 발생 시 실행할 Event Handler 함수가 정의되어 있습니다.
+  - Focus Event Handler :
+    - 검색 Input Focus 시 검색어 리스트 UI가 노출되고, Blur 시 검색어 리스트 UI가 제거됩니다.
+  - Keyboard Event Handler :
+    - 위, 아래 방향키 입력 시 검색어 리스트의 검색어가 활성화되어 원하는 검색어로 간편하게 이동할 수 있습니다.
+    - Keyboard Event를 이용하여 검색어를 활성화 시킬 경우, 검색 Input에 해당 검색어를 반영합니다.
+    - 사용자의 편의를 위해 Keyboard Event로 인해 검색 Input이 변경될 경우, 추천 검색어를 갱신하지 않습니다.
+    - Enter 키를 눌러 활성화 된 검색어를 즉시 검색할 수 있습니다.
+
+  - Change Event Handler :
+    - 검색 Input의 Value가 없으면 최근 검색어가, Value가 있으면 추천 검색어가 나타납니다.
+    - Change Event가 발생 시 추천 검색어가 갱신됨에 따라 검색어 활성화 상태를 초기화합니다.
+
+- src/components/KeywordsList/KeywordListItem.tsx
+  - 각각의 추천 검색어 및 최근 검색어를 나타내는 컴포넌트로, Mouse Event Handler 함수와 함께 정의되어 있습니다.
+  - Mouse Event Handler :
+    - 검색어에 마우스 커서를 올리면 해당 검색어가 활성화됩니다.
+    - 검색어에서 마우스 커서가 벗어나면 검색어 활성화 상태가 초기화됩니다.
+    - Mouse Event와 검색 Input의 Keyboard Event로 발생한 검색어 활성화 상태는 공유됩니다.
 
 ### 2. 검색어 추천 기능
 
