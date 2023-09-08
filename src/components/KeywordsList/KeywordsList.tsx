@@ -39,4 +39,9 @@ export const KeywordsListContainer = styled.div`
     margin-left: 24px;
     color: ${({ theme }) => theme.color.grey400};
   }
+
+  .loader {
+    text-align: center;
+    color: ${({ theme }) => theme.color.grey400};
+  }
 `;

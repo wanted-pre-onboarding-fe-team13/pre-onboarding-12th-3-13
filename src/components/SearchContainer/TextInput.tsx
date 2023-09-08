@@ -1,11 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 
 import { focusIndexState, recentListState, recommendListState } from '@/recoil/keywordListAtoms';
 import { isKeyDownActiveState, isSearchModeState, searchTextState } from '@/recoil/searchAtoms';
-import { searchByKeyword } from '@/apis/search';
-import useDebounce from '@/hooks/useDebounce';
 
 export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElement>) => {
   const [searchText, setSearchText] = useRecoilState(searchTextState);
@@ -15,7 +13,6 @@ export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElemen
   const isKeyDownActive = useRecoilValue(isKeyDownActiveState);
   const focusIndex = useRecoilValue(focusIndexState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
-  const setRecommendList = useSetRecoilState(recommendListState);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,24 +27,11 @@ export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElemen
     }
   }, [focusIndex]);
 
-  const getResultList = async () => {
-    if (isKeyDownActive) return;
-    const responseData = await searchByKeyword(searchText);
-    const slicedData = responseData.slice(0, 6);
-    setRecommendList(slicedData);
-  };
-
   const keywordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setSearchText(value);
     resetFocusIndex();
   };
-
-  useDebounce({
-    delay: 300,
-    callback: getResultList,
-    trigger: searchText,
-  });
 
   return (
     <StyledInput
