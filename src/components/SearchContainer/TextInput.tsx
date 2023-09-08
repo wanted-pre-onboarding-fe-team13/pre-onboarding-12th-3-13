@@ -3,10 +3,15 @@ import { styled } from 'styled-components';
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { focusIndexState } from '@/recoil/keywordListAtoms';
-import { isKeyDownActiveState, searchTextState } from '@/recoil/searchAtoms';
+import {
+  isKeyDownActiveState,
+  isShowKeywordListState,
+  searchTextState,
+} from '@/recoil/searchAtoms';
 
 export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElement>) => {
   const [searchText, setSearchText] = useRecoilState(searchTextState);
+  const setShowList = useSetRecoilState(isShowKeywordListState);
   const setIsKeyDownActive = useSetRecoilState(isKeyDownActiveState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
 
@@ -18,6 +23,7 @@ export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElemen
     setIsKeyDownActive(false);
     setSearchText(value);
     resetFocusIndex();
+    setShowList(true);
   };
 
   return (

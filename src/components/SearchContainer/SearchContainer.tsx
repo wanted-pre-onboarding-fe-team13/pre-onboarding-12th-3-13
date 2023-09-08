@@ -24,8 +24,9 @@ export const SearchContainer = () => {
   const isSearchMode = useRecoilValue(isSearchModeState);
   const keywordListLength = useRecoilValue(keywordListLengthState);
   const recommendList = useRecoilValue(recommendListState);
-  const recentList = useRecoilValue(recentListState);
-  const setSerachText = useSetRecoilState(searchTextState);
+  const [recentList, setRecentList] = useRecoilState(recentListState);
+  const [searchText, setSerachText] = useRecoilState(searchTextState);
+  const resetSearchText = useResetRecoilState(searchTextState);
   const setIsShowKeywordList = useSetRecoilState(isShowKeywordListState);
   const setIsKeyDownActive = useSetRecoilState(isKeyDownActiveState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
@@ -47,12 +48,31 @@ export const SearchContainer = () => {
     return keyword;
   };
 
+  const addKeywardToRecentList = (keyword: string) => {
+    let currentRecentList = recentList;
+    if (keyword in currentRecentList) {
+      const idx = currentRecentList.indexOf(keyword);
+      currentRecentList = [...currentRecentList.slice(0, idx), ...currentRecentList.slice(idx + 1)];
+    }
+
+    const updatedRecentList = [keyword, ...currentRecentList].slice(0, 10);
+    setRecentList(updatedRecentList);
+  };
+
+  const submitHandler = () => {
+    addKeywardToRecentList(searchText);
+    setIsShowKeywordList(false);
+    resetFocusIndex();
+    resetSearchText();
+  };
+
   const handleKeyDownInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.nativeEvent.isComposing) return;
 
     const maxIndex = Math.min(keywordListLength, MAX_LIST_ITEM) - 1;
 
     if (event.key === 'ArrowDown' && maxIndex > -1) {
+      event.preventDefault();
       const nextIndex = focusIndex < maxIndex ? focusIndex + 1 : 0;
 
       endOfComposing();
@@ -68,6 +88,7 @@ export const SearchContainer = () => {
     }
 
     if (event.key === 'ArrowUp' && maxIndex > -1) {
+      event.preventDefault();
       const prevIndex = focusIndex > 0 ? focusIndex - 1 : maxIndex;
 
       endOfComposing();
@@ -84,11 +105,16 @@ export const SearchContainer = () => {
 
     if (event.key === 'Escape') {
       event.preventDefault();
-
       setIsShowKeywordList(false);
       resetFocusIndex();
     }
+
+    if (event.key === 'Enter' && searchText.trim()) {
+      event.preventDefault();
+      submitHandler();
+    }
   };
+
   return (
     <Container>
       <TextInput
