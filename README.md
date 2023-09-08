@@ -40,8 +40,8 @@
 https://pre-onboarding-12th-3-13.vercel.app/
 
 #### 페이지 미리보기
-<img src="https://github.com/wanted-pre-onboarding-fe-team13/pre-onboarding-12th-3-13/assets/122191856/3e2cf675-b680-43d6-8a28-49ced12cf06c" alt="img" width="500px"/>
 
+<img src="https://github.com/wanted-pre-onboarding-fe-team13/pre-onboarding-12th-3-13/assets/122191856/3e2cf675-b680-43d6-8a28-49ced12cf06c" alt="img" width="500px"/>
 
 ---
 
@@ -56,10 +56,12 @@ https://pre-onboarding-12th-3-13.vercel.app/
 ### 2. 검색어 추천 기능
 
 #### 설계 및 개발 방향
-input의 값이 변할때 마다 api가 호출되는 것을 막기 위해 Debounce를 수행하는 useDebounce 훅을 추가하였습니다. 
+
+input의 값이 변할때 마다 api가 호출되는 것을 막기 위해 Debounce를 수행하는 useDebounce 훅을 추가하였습니다.
 <br/> 이를 통해 이벤트 오버클럭으로 인한 리소스 사용량의 증가와 서버의 과부하를 예방하고자 하였습니다.
 
 #### 주요 구성 및 동작
+
 - src/hooks/useDebounce.ts
   - callback : 사용자의 키보드 이벤트가 멈춘 후 실행 될 함수를 정의합니다
   - delay : 사용자의 이벤트가 멈춘 것을 감지 할 시간을 정의합니다.
@@ -72,4 +74,30 @@ input의 값이 변할때 마다 api가 호출되는 것을 막기 위해 Deboun
 
 #### 설계 및 개발 방향
 
+프로젝트에서는 로컬 스토리지(Local Storage)를 활용하여 검색 결과를 캐싱하고 관리하는 캐싱 기능을 구현하였습니다. 이를 위해 주요한 설계 및 개발 방향은 다음과 같습니다:
+
+- LocalStorage 내부 데이터 관리: 로컬 스토리지를 사용하여 검색 결과를 캐싱하고, 이 데이터를 효율적으로 관리합니다.
+
+- 유효 기간 설정: 각 검색 결과에 대한 유효 기간(Expiration Date)을 설정하여 만료된 데이터를 정기적으로 삭제합니다.
+
+- 캐시 크기 관리: 로컬 스토리지의 메모리 사용을 효율적으로 관리하기 위해 캐시 크기 제한을 설정하고, 초과할 경우 가장 오래된 데이터를 제거합니다.
+
 #### 주요 구성 및 동작
+
+- **Main logic**: api를 호출 할 때마다, caching된 local storage를 확인 한 후 cache hit가 발생할 경우 해당 cache를 사용합니다. 만약 존재 하지않다면 새로운 cache를 설정합니다. 이때, 존재하는 cache가 maximum cache size를 초과하였을때, 가장 오래된 cache를 제거합니다.
+
+- LocalStorageCacheManager 클래스: 검색 결과를 캐싱하고 로컬 스토리지를 관리하기 위한 클래스로서, 다음과 같은 메소드를 포함하고 있습니다:
+
+  - set(key, value, duration): 특정 검색어에 대한 결과를 캐싱하며, 지정된 기간 동안 유지합니다.
+
+  - get(key): 특정 검색어에 대한 캐시된 결과를 반환하며, 만료된 데이터는 자동으로 삭제됩니다.
+
+  - has(key): 특정 검색어에 대한 캐시가 있는지 확인합니다.
+
+  - delete(key): 특정 검색어에 대한 캐시를 삭제합니다.
+
+  - cleanupExpiredItems(): 만료된 캐시 항목을 정리하고 삭제합니다.
+
+  - removeOldestItem(): 가장 오래된 캐시 항목을 삭제하여 캐시 크기를 유지합니다.
+
+- 캐시 크기 제한 설정: cacheSizeLimit 속성을 사용하여 로컬 스토리지에 저장할 수 있는 캐시의 최대 크기를 설정할 수 있습니다.
