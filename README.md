@@ -36,15 +36,12 @@
 ## 🎬 페이지 미리보기 & 구현영상
 
 구현영상은 배포 링크로 대체합니다.
+<br/>
 https://pre-onboarding-12th-3-13.vercel.app/
 
-### 메인 페이지 (이슈 목록)
+#### 페이지 미리보기
+<img src="https://github.com/wanted-pre-onboarding-fe-team13/pre-onboarding-12th-3-13/assets/122191856/3e2cf675-b680-43d6-8a28-49ced12cf06c" alt="img" width="500px"/>
 
-<img src="./src/assets/mainpage.png" width="400">
-
-### 상세 페이지 (이슈에 대한 상세한 정보)
-
-<img src="./src/assets/issuepage.png" width="400">
 
 ---
 
@@ -59,8 +56,17 @@ https://pre-onboarding-12th-3-13.vercel.app/
 ### 2. 검색어 추천 기능
 
 #### 설계 및 개발 방향
+input의 값이 변할때 마다 api가 호출되는 것을 막기 위해 Debounce를 수행하는 useDebounce 훅을 추가하였습니다. 
+<br/> 이를 통해 이벤트 오버클럭으로 인한 리소스 사용량의 증가와 서버의 과부하를 예방하고자 하였습니다.
 
 #### 주요 구성 및 동작
+- src/hooks/useDebounce.ts
+  - callback : 사용자의 키보드 이벤트가 멈춘 후 실행 될 함수를 정의합니다
+  - delay : 사용자의 이벤트가 멈춘 것을 감지 할 시간을 정의합니다.
+  - trigger : 변경을 감지하여 useDebounce 훅이 실행 될 의존성을 설정합니다.
+- src/components/keywordList/RecommendList.tsx
+  - getResultList: 검색어 키워드를 쿼리스트링으로 전달하여 서버에서 데이터를 받아오고, 이를 recommendList에 저장하여 사용자에게 저장합니다.
+  - useDebounce : searchText의 변화를 감지하여 사용자의 동작이 150ms 이상 멈추면 콜백함수로 전달한 getResultList를 실행하여 api를 호출합니다.
 
 ### 3. 캐싱 기능
 
