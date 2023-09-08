@@ -1,34 +1,21 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
-import { focusIndexState, recentListState, recommendListState } from '@/recoil/keywordListAtoms';
-import { isKeyDownActiveState, isSearchModeState, searchTextState } from '@/recoil/searchAtoms';
+import { focusIndexState } from '@/recoil/keywordListAtoms';
+import { isKeyDownActiveState, searchTextState } from '@/recoil/searchAtoms';
 
 export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElement>) => {
   const [searchText, setSearchText] = useRecoilState(searchTextState);
-  const isSearchMode = useRecoilValue(isSearchModeState);
-  const recommendList = useRecoilValue(recommendListState);
-  const recentList = useRecoilValue(recentListState);
-  const isKeyDownActive = useRecoilValue(isKeyDownActiveState);
-  const focusIndex = useRecoilValue(focusIndexState);
+  const setIsKeyDownActive = useSetRecoilState(isKeyDownActiveState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (isKeyDownActive && focusIndex >= 0 && inputRef.current) {
-      const keyword = isSearchMode ? recommendList[focusIndex].sickNm : recentList[focusIndex];
-
-      setSearchText(keyword);
-
-      inputRef.current.selectionStart = keyword.length;
-      inputRef.current.selectionEnd = keyword.length;
-    }
-  }, [focusIndex]);
-
   const keywordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
+
+    setIsKeyDownActive(false);
     setSearchText(value);
     resetFocusIndex();
   };
@@ -39,6 +26,7 @@ export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElemen
       value={searchText}
       onChange={keywordOnChange}
       autoComplete="off"
+      ref={inputRef}
       {...rest}
     />
   );

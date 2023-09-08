@@ -3,14 +3,29 @@ import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState 
 
 import { SubmitBtn, TextInput } from '.';
 
-import { isKeyDownActiveState, isShowKeywordListState } from '@/recoil/searchAtoms';
-import { focusIndexState, keywordListLengthState } from '@/recoil/keywordListAtoms';
+import {
+  isKeyDownActiveState,
+  isSearchModeState,
+  isShowKeywordListState,
+  searchTextState,
+} from '@/recoil/searchAtoms';
+import {
+  focusIndexState,
+  keywordListLengthState,
+  recentListState,
+  recommendListState,
+} from '@/recoil/keywordListAtoms';
+import { endOfComposing } from '@/utils';
 
 const MAX_LIST_ITEM = 7;
 
 export const SearchContainer = () => {
   const [focusIndex, setFocusIndex] = useRecoilState(focusIndexState);
+  const isSearchMode = useRecoilValue(isSearchModeState);
   const keywordListLength = useRecoilValue(keywordListLengthState);
+  const recommendList = useRecoilValue(recommendListState);
+  const recentList = useRecoilValue(recentListState);
+  const setSerachText = useSetRecoilState(searchTextState);
   const setIsShowKeywordList = useSetRecoilState(isShowKeywordListState);
   const setIsKeyDownActive = useSetRecoilState(isKeyDownActiveState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
@@ -24,29 +39,52 @@ export const SearchContainer = () => {
     setIsKeyDownActive(false);
   };
 
+  const getKeyword = (index: number) => {
+    if (index < 0) return '';
+
+    const keyword = isSearchMode ? recommendList[index].sickNm : recentList[index];
+
+    return keyword;
+  };
+
   const handleKeyDownInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.nativeEvent.isComposing) return;
 
     const maxIndex = Math.min(keywordListLength, MAX_LIST_ITEM) - 1;
 
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
+    if (event.key === 'ArrowDown' && maxIndex > -1) {
       const nextIndex = focusIndex < maxIndex ? focusIndex + 1 : 0;
+
+      endOfComposing();
 
       setIsKeyDownActive(true);
       setFocusIndex(nextIndex);
+
+      const keyword = getKeyword(nextIndex);
+
+      if (keyword) {
+        setSerachText(keyword);
+      }
     }
 
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
+    if (event.key === 'ArrowUp' && maxIndex > -1) {
       const prevIndex = focusIndex > 0 ? focusIndex - 1 : maxIndex;
+
+      endOfComposing();
 
       setIsKeyDownActive(true);
       setFocusIndex(prevIndex);
+
+      const keyword = getKeyword(prevIndex);
+
+      if (keyword) {
+        setSerachText(keyword);
+      }
     }
 
     if (event.key === 'Escape') {
       event.preventDefault();
+
       setIsShowKeywordList(false);
       resetFocusIndex();
     }
