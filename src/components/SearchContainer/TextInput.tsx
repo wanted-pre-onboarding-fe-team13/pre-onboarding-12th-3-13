@@ -28,7 +28,8 @@ export const TextInput = ({ ...rest }: React.InputHTMLAttributes<HTMLInputElemen
   }, [focusIndex]);
 
   const keywordOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+    const { value } = e.target;
+    setSearchText(value);
     resetFocusIndex();
   };
 

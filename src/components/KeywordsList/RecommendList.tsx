@@ -1,48 +1,53 @@
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { KeywordListItem, KeywordsListContainer } from '.';
+import { recommendListState } from '@/recoil/keywordListAtoms';
+import useDebounce from '@/hooks/useDebounce';
+import { searchByKeyword } from '@/apis/search';
+import { isKeyDownActiveState, searchTextState } from '@/recoil/searchAtoms';
+import { useState } from 'react';
 
 export const RecommendList = () => {
-  // --- 임시 --- //
-  const isLoading = false;
-  const error = null;
-  const data = [
-    {
-      sickCd: 'C23',
-      sickNm: '담낭의 악성 신생물',
-    },
-    {
-      sickCd: 'K81',
-      sickNm: '담낭염',
-    },
-    {
-      sickCd: 'K82',
-      sickNm: '담낭의 기타 질환',
-    },
-    {
-      sickCd: 'K87',
-      sickNm: '달리 분류된 질환에서의 담낭, 담도 및 췌장의 장애',
-    },
-    {
-      sickCd: 'Q44',
-      sickNm: '담낭, 담관 및 간의 선천기형',
-    },
-  ];
-  // --- 임시 --- //
+  const [recommendList, setRecommendList] = useRecoilState(recommendListState);
+  const isKeyDownActive = useRecoilValue(isKeyDownActiveState);
+  const searchText = useRecoilValue(searchTextState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const getResultList = async () => {
+    if (isKeyDownActive) return;
+    setIsLoading(true);
+
+    try {
+      const responseData = await searchByKeyword(searchText);
+      const slicedData = responseData.slice(0, 6);
+      setRecommendList(slicedData);
+      setIsLoading(false);
+    } catch (error) {
+      setIsError(true);
+    }
+  };
+
+  useDebounce({
+    delay: 150,
+    callback: getResultList,
+    trigger: searchText,
+  });
 
   return (
     <KeywordsListContainer>
       <KeywordListItem />
-      {isLoading && <p>Loading...</p>}
-      {error && <p>Error</p>}
-      {!isLoading && data.length === 0 && (
+      {isLoading && <p className="loader">Loading...</p>}
+      {isError && <p className="loader">요청이 실패했습니다. 다시 시도해주세요.</p>}
+      {!isLoading && !isError && recommendList.length === 0 && (
         <>
           <p className="title">추천 검색어</p>
           <p className="empty">추천 검색어가 없습니다.</p>
         </>
       )}
-      {!isLoading && data.length > 0 && (
+      {!isLoading && !isError && recommendList.length > 0 && (
         <>
           <p className="title">추천 검색어</p>
-          {data?.map(({ sickCd, sickNm }, index) => (
+          {recommendList?.map(({ sickCd, sickNm }, index) => (
             <KeywordListItem key={sickCd} keyword={sickNm} index={index} />
           ))}
         </>
