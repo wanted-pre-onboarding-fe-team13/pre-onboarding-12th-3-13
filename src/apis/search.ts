@@ -11,6 +11,7 @@ export const searchByKeyword = async (keyword: string) => {
   const cacheKey = keyword;
 
   if (localStorageCacheManager.has(cacheKey)) {
+    console.log('cache hit')
     return localStorageCacheManager.get(cacheKey);
   }
   console.info('calling api');
