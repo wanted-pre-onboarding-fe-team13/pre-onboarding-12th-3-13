@@ -30,6 +30,7 @@ export const SearchContainer = () => {
     const maxIndex = Math.min(keywordListLength, MAX_LIST_ITEM) - 1;
 
     if (event.key === 'ArrowDown') {
+      event.preventDefault();
       const nextIndex = focusIndex < maxIndex ? focusIndex + 1 : 0;
 
       setIsKeyDownActive(true);
@@ -37,6 +38,7 @@ export const SearchContainer = () => {
     }
 
     if (event.key === 'ArrowUp') {
+      event.preventDefault();
       const prevIndex = focusIndex > 0 ? focusIndex - 1 : maxIndex;
 
       setIsKeyDownActive(true);
@@ -44,6 +46,7 @@ export const SearchContainer = () => {
     }
 
     if (event.key === 'Escape') {
+      event.preventDefault();
       setIsShowKeywordList(false);
       resetFocusIndex();
     }
