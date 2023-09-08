@@ -1,10 +1,10 @@
-import localStorageCacheManager from '@/stores/localStorageCacheManager.ts'
+import localStorageCacheManager from '@/stores/localStorageCacheManager.ts';
 import { ApiClient } from './client';
 
 const client = new ApiClient('https://pre-onboarding-12th-3rd-server.vercel.app/api');
 
-
-export const searchByKeyword = async (keyword: string) => {  if (!keyword || keyword.length === 0) return [];
+export const searchByKeyword = async (keyword: string) => {
+  if (!keyword || keyword.length === 0) return [];
   const config = {
     params: { q: keyword },
   };

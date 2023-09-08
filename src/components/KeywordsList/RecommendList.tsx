@@ -9,9 +9,10 @@ import { useState } from 'react';
 export const RecommendList = () => {
   const [recommendList, setRecommendList] = useRecoilState(recommendListState);
   const isKeyDownActive = useRecoilValue(isKeyDownActiveState);
-  const searchText = useRecoilValue(searchTextState);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+
+  const searchText = useRecoilValue(searchTextState);
 
   const getResultList = async () => {
     if (isKeyDownActive) return;
@@ -35,7 +36,7 @@ export const RecommendList = () => {
 
   return (
     <KeywordsListContainer>
-      <KeywordListItem />
+      <KeywordListItem keyword={searchText} />
       {isLoading && <p className="loader">Loading...</p>}
       {isError && <p className="loader">요청이 실패했습니다. 다시 시도해주세요.</p>}
       {!isLoading && !isError && recommendList.length === 0 && (

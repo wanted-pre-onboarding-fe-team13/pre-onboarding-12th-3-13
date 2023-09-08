@@ -8,7 +8,7 @@ interface Props {
   index?: number;
 }
 
-export const KeywordListItem = ({ keyword = '검색어', index, ...rest }: Props) => {
+export const KeywordListItem = ({ keyword, index, ...rest }: Props) => {
   const [focusIndex, setFocusIndex] = useRecoilState(focusIndexState);
   const resetFocusIndex = useResetRecoilState(focusIndexState);
 

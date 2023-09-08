@@ -1,10 +1,9 @@
+import { useRecoilValue } from 'recoil';
 import { KeywordListItem, KeywordsListContainer } from '.';
+import { recentListState } from '@/recoil/keywordListAtoms';
 
 export const RecentList = () => {
-  // --- 임시 --- //
-  const TEMP_RECENTKEYWORDS = ['일', '이', '삼', '사'];
-  const recentKeywords = TEMP_RECENTKEYWORDS;
-  // --- 임시 --- //
+  const recentKeywords = useRecoilValue(recentListState);
 
   return (
     <KeywordsListContainer>
