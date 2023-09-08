@@ -35,9 +35,7 @@
 
 ## 🎬 페이지 미리보기 & 구현영상
 
-구현영상은 배포 링크로 대체합니다.
-<br/>
-https://pre-onboarding-12th-3-13.vercel.app/
+배포 링크 : https://pre-onboarding-12th-3-13.vercel.app/
 
 #### 페이지 미리보기
 
